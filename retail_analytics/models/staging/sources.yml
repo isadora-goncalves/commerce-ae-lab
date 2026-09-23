@@ -1,0 +1,19 @@
+version: 2
+
+sources:
+  - name: raw
+    database: RETAIL_ANALYTICS
+    schema: RAW
+    tables:
+      - name: categories
+      - name: customers
+      - name: employees
+      - name: orders
+      - name: order_items
+      - name: payments
+      - name: products
+      - name: promotions
+      - name: returns
+      - name: shipments
+      - name: stores
+      - name: suppliers
