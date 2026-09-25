@@ -1,0 +1,193 @@
+version: 2
+
+models:
+  - name: stg_categories
+    columns:
+      - name: category_id
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_customers
+    columns:
+      - name: customer_id
+        tests:
+          - not_null
+          - unique
+  
+  - name: stg_employees
+    columns:
+      - name: employee_id
+        tests:
+          - not_null
+          - unique
+      - name: store_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_stores')
+                field: store_id
+
+  - name: stg_orders
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+          - unique
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_customers')
+                field: customer_id
+      - name: store_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_stores')
+                field: store_id
+
+      - name: promotion_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('stg_promotions')
+                field: promotion_id
+
+  - name: stg_order_items
+    columns: 
+    - name: order_item_id
+      tests:
+        - not_null
+        - unique
+    - name: order_id
+      tests:
+        - not_null     
+        - relationships:
+            arguments:
+                to: ref('stg_orders')    
+                field: order_id
+    - name: product_id
+      tests:
+        - not_null     
+        - relationships:
+            arguments:
+                to: ref('stg_products')    
+                field: product_id
+    - name: qty
+      tests:
+        - not_null 
+    - name: price
+      tests:
+        - not_null 
+
+  - name: stg_payments
+    columns: 
+    - name: payment_id
+      tests:
+        - not_null
+        - unique
+    - name: order_id
+      tests:
+        - not_null
+        - relationships:
+            arguments:
+              to: ref('stg_orders')    
+              field: order_id
+    - name: amount
+      tests:
+        - not_null
+
+  - name: stg_products
+    columns: 
+    - name: product_id
+      tests:
+        - not_null
+        - unique
+    - name: category_id
+      tests:
+        - not_null
+        - relationships:
+            arguments:
+              to: ref('stg_categories')    
+              field: category_id
+    - name: supplier_id
+      tests:
+        - not_null
+        - relationships:
+            arguments:
+              to: ref('stg_suppliers')    
+              field: supplier_id
+    - name: price
+      tests:
+        - not_null
+
+  - name: stg_promotions
+    columns: 
+    - name: promotion_id
+      tests:
+        - not_null
+        - unique
+    - name: discount
+      tests:
+        - not_null
+  
+  - name: stg_returns
+    columns: 
+    - name: return_id
+      tests:
+        - not_null
+        - unique
+    - name: order_item_id
+      tests:
+        - not_null
+        - relationships:
+            arguments:
+              to: ref('stg_order_items')    
+              field: order_item_id
+    - name: refund
+      tests:
+        - not_null
+  
+  - name: stg_shipments
+    columns: 
+    - name: shipment_id
+      tests:
+        - not_null
+        - unique
+    - name: order_id
+      tests:
+        - not_null
+        - relationships:
+            arguments:
+              to: ref('stg_orders')    
+              field: order_id
+    - name: status
+      tests:
+        - not_null
+        - accepted_values:
+            arguments:
+              values: ['delivered','late','shipped']
+
+  - name: stg_stores
+    columns: 
+    - name: store_id
+      tests:
+        - not_null
+        - unique
+    - name: city
+      tests:
+        - not_null
+  
+  - name: stg_suppliers
+    columns: 
+    - name: supplier_id
+      tests:
+        - not_null
+        - unique
+    - name: country
+      tests:
+        - not_null
